@@ -42,6 +42,7 @@ module Pod
           #
           def install!
             refresh_file_accessors
+            prepare_pod_groups
             add_source_files_references
             add_frameworks_bundles
             add_vendored_libraries
@@ -65,6 +66,19 @@ module Pod
           #
           def refresh_file_accessors
             file_accessors.map(&:path_list).uniq.each(&:read_file_system)
+          end
+
+          # Prepares the main groups to which all files will be added for the respective target
+          #
+          def prepare_pod_groups
+            file_accessors.each do |file_accessor|
+              pod_name = file_accessor.spec.name
+              next unless sandbox.local?(pod_name)
+              root_name = Specification.root_name(pod_name)
+              path = file_accessor.root
+              group = pods_project.group_for_spec(root_name)
+              group.set_path(path) unless group.path == path
+            end
           end
 
           # Adds the source files of the Pods to the Pods project.
@@ -199,11 +213,10 @@ module Pod
               next if paths.empty?
 
               pod_name = file_accessor.spec.name
-              preserve_pod_file_structure_flag = (sandbox.local?(pod_name) || preserve_pod_file_structure)
-              base_path = preserve_pod_file_structure_flag ? common_path(paths) : nil
+              preserve_pod_file_structure_flag = (sandbox.local?(pod_name) || preserve_pod_file_structure) && reflect_file_system_structure
               group = pods_project.group_for_spec(pod_name, group_key)
               paths.each do |path|
-                pods_project.add_file_reference(path, group, preserve_pod_file_structure_flag && reflect_file_system_structure, base_path)
+                pods_project.add_file_reference(path, group, preserve_pod_file_structure_flag)
               end
             end
           end
@@ -257,31 +270,6 @@ module Pod
             # within them added as well. This generally happens if the glob within the
             # resources directory was not a recursive glob.
             allowable_paths + lproj_paths.subtract(lproj_paths_with_files).to_a
-          end
-
-          # Returns a Pathname of the nearest parent from which all the given paths descend.
-          # Converts each Pathname to a list of path components and finds the longest common prefix
-          #
-          # @param  [Array<Pathname>] paths
-          #         The paths to files or directories on disk. Must be absolute paths
-          #
-          # @return [Pathname] Pathname of the nearest parent shared by paths, or nil if none exists
-          #
-          def common_path(paths)
-            return nil if paths.empty?
-            strs = paths.map do |path|
-              unless path.absolute?
-                raise ArgumentError, "Paths must be absolute #{path}"
-              end
-              path.dirname.to_s
-            end
-            min, max = strs.minmax
-            min = min.split('/')
-            max = max.split('/')
-            idx = min.size.times { |i| break i if min[i] != max[i] }
-            result = Pathname.new(min[0...idx].join('/'))
-            # Don't consider "/" a common path
-            return result unless result.to_s == '' || result.to_s == '/'
           end
 
           #-----------------------------------------------------------------------#

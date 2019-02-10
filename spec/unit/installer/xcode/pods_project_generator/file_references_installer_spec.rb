@@ -224,58 +224,20 @@ module Pod
                 installer.send(:file_accessors).should == []
               end
             end
+          end
 
-            describe '#common_path' do
-              it 'calculates the correct common path' do
-                paths = [
-                  '/Base/Sub/A/1.txt',
-                  '/Base/Sub/A/2.txt',
-                  '/Base/Sub/A/B/1.txt',
-                  '/Base/Sub/A/B/2.txt',
-                  '/Base/Sub/A/D/E/1.txt',
-                ].map { |p| Pathname.new(p) }
-                result = @installer.send(:common_path, paths)
-                result.should == Pathname.new('/Base/Sub/A')
-              end
+          #-------------------------------------------------------------------------#
 
-              it 'compares path components instead of string prefixes' do
-                paths = [
-                  '/Base/Sub/A/1.txt',
-                  '/Base/Sub/AA/2.txt',
-                  '/Base/Sub/AAA/B/1.txt',
-                  '/Base/Sub/AAAA/B/2.txt',
-                  '/Base/Sub/AAAAA/D/E/1.txt',
-                ].map { |p| Pathname.new(p) }
-                result = @installer.send(:common_path, paths)
-                result.should == Pathname.new('/Base/Sub')
-              end
+          describe 'Installation With Development Pods' do
+            before do
+              @project = Project.new(config.sandbox.project_path)
+              @project.add_pod_group('BananaLib', fixture('banana-lib'), true)
+            end
 
-              it 'should not consider root \'/\' a common path' do
-                paths = [
-                  '/A/B/C',
-                  '/D/E/F',
-                  '/G/H/I',
-                ].map { |p| Pathname.new(p) }
-                result = @installer.send(:common_path, paths)
-                result.should.be.nil
-              end
-
-              it 'raises when given a relative path' do
-                paths = [
-                  '/A/B/C',
-                  '/D/E/F',
-                  'bad/path',
-                ].map { |p| Pathname.new(p) }
-                should.raise ArgumentError do
-                  @installer.send(:common_path, paths)
-                end
-              end
-
-              it 'returns nil when given an empty path list' do
-                paths = []
-                result = @installer.send(:common_path, paths)
-                result.should.be.nil
-              end
+            it 'sets the path of the Pod group to the installation root' do
+              @installer.install!
+              group = @project.group_for_spec('BananaLib')
+              group.path.should == fixture('banana-lib').relative_path_from(config.sandbox.root).to_s
             end
           end
 
