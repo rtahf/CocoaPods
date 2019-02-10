@@ -221,19 +221,15 @@ module Pod
     #         If yes, where needed, intermediate groups are created, similar to
     #         how mkdir -p operates.
     #
-    # @param  [Pathname] base_path
-    #         The base path for newly created groups when reflect_file_system_structure is true.
-    #         If nil, the provided group's real_path is used.
-    #
     # @return [PBXFileReference] The new file reference.
     #
-    def add_file_reference(absolute_path, group, reflect_file_system_structure = false, base_path = nil)
+    def add_file_reference(absolute_path, group, reflect_file_system_structure = false)
       file_path_name = absolute_path.is_a?(Pathname) ? absolute_path : Pathname(absolute_path)
       if ref = reference_for_path(file_path_name)
         return ref
       end
 
-      group = group_for_path_in_group(file_path_name, group, reflect_file_system_structure, base_path)
+      group = group_for_path_in_group(file_path_name, group, reflect_file_system_structure)
       ref = group.new_file(file_path_name.realpath)
       @refs_by_absolute_path[file_path_name.to_s] = ref
     end
@@ -395,21 +391,15 @@ module Pod
     #         If yes, where needed, intermediate groups are created, similar to
     #         how mkdir -p operates.
     #
-    # @param  [Pathname] base_path
-    #         The base path for the newly created group. If nil, the provided group's real_path is used.
-    #
     # @return [PBXGroup] The appropriate group for the filepath.
     #         Can be PBXVariantGroup, if the file is localized.
     #
-    def group_for_path_in_group(absolute_pathname, group, reflect_file_system_structure, base_path = nil)
+    def group_for_path_in_group(absolute_pathname, group, reflect_file_system_structure)
       unless absolute_pathname.absolute?
         raise ArgumentError, "Paths must be absolute #{absolute_pathname}"
       end
-      unless base_path.nil? || base_path.absolute?
-        raise ArgumentError, "Paths must be absolute #{base_path}"
-      end
 
-      relative_base = base_path.nil? ? group.real_path : base_path.realdirpath
+      relative_base = group.real_path
       relative_pathname = absolute_pathname.relative_path_from(relative_base)
       relative_dir = relative_pathname.dirname
 

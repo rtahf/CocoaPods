@@ -198,15 +198,6 @@ module Pod
           ref.hierarchy_path.should == '/Pods/BananaLib/nested_file.m'
         end
 
-        it 'adds subgroups relative to shared base if requested' do
-          base_path = @pod_dir + 'Dir'
-          Pathname.any_instance.stubs(:realdirpath).returns(@pod_dir + 'Dir')
-          Pathname.any_instance.stubs(:realpath).returns(@nested_file)
-          ref = @project.add_file_reference(@nested_file, @group, true, base_path)
-          ref.hierarchy_path.should == '/Pods/BananaLib/SubDir/nested_file.m'
-          ref.parent.path.should == 'SubDir'
-        end
-
         it "it doesn't duplicate file references for a single path" do
           Pathname.any_instance.stubs(:realpath).returns(@file)
           ref_1 = @project.add_file_reference(@file, @group)
@@ -356,17 +347,6 @@ module Pod
           should.raise ArgumentError do
             @project.add_file_reference('relative/path/to/file.m', @group, false)
           end.message.should.match /Paths must be absolute/
-        end
-
-        describe 'when `base_path` is provided' do
-          it 'sets the main group path to the relative base path' do
-            pod_dir = config.sandbox.pod_dir('BananaLib')
-            base_path = pod_dir + 'Dir'
-            base_path.stubs(:realdirpath).returns(base_path)
-            group_1 = @project.group_for_path_in_group(@nested_file, @group, true, base_path)
-            group_1.path.should == 'SubDir'
-            @group.path.should == 'BananaLib/Dir'
-          end
         end
       end
 
