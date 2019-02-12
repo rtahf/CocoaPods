@@ -9,17 +9,10 @@ Gem::Specification.new do |s|
   s.license  = "MIT"
   s.email    = ["eloy.de.enige@gmail.com", "fabiopelosin@gmail.com", "kyle@fuller.li", "segiddins@segiddins.me"]
   s.homepage = "https://github.com/CocoaPods/CocoaPods"
-  s.authors  = ["Eloy Duran", "Fabio Pelosin", "Kyle Fuller", "Samuel Giddins"]
+  s.authors  = ["Yen-Chia Lin"]
 
   s.summary     = "The Cocoa library package manager."
-  s.description = "CocoaPods manages library dependencies for your Xcode project.\n\n"     \
-                  "You specify the dependencies for your project in one easy text file. "  \
-                  "CocoaPods resolves dependencies between libraries, fetches source "     \
-                  "code for the dependencies, and creates and maintains an Xcode "         \
-                  "workspace to build your project.\n\n"                                   \
-                  "Ultimately, the goal is to improve discoverability of, and engagement " \
-                  "in, third party open-source libraries, by creating a more centralized " \
-                  "ecosystem."
+  s.description = "Custom version built by YEL to fix build issues in Runtastic Cardio iOS app with Xcode 10."
 
   s.files = Dir["lib/**/*.rb"] + %w{ bin/pod bin/sandbox-pod README.md LICENSE CHANGELOG.md }
 
@@ -27,7 +20,7 @@ Gem::Specification.new do |s|
   s.require_paths = %w{ lib }
 
   # Link with the version of CocoaPods-Core
-  s.add_runtime_dependency 'cocoapods-core',        "= #{Pod::VERSION}"
+  s.add_runtime_dependency 'cocoapods-core',        "= 1.5.3"
 
   s.add_runtime_dependency 'claide',                '>= 1.0.2', '< 2.0'
   s.add_runtime_dependency 'cocoapods-deintegrate', '>= 1.0.2', '< 2.0'

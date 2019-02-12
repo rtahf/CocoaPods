@@ -1,5 +1,5 @@
 module Pod
   # The version of the CocoaPods command line tool.
   #
-  VERSION = '1.5.3'.freeze unless defined? Pod::VERSION
+  VERSION = '1.5.3.1-runtastic'.freeze unless defined? Pod::VERSION
 end
