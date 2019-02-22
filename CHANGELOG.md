@@ -4,6 +4,16 @@ To install or update CocoaPods see this [guide](http://docs.cocoapods.org/guides
 
 To install release candidates run `[sudo] gem install cocoapods --pre`
 
+## 1.5.3.2-runtastic (2019-02-22)
+
+* Fix linting fails with Xcode 10.2 Beta because it can't find a simulator by using `fourflusher` >= 2.2.0 gem version  
+  [#8163](https://github.com/CocoaPods/CocoaPods/issues/8163)
+
+## 1.5.3.1-runtastic (2018-09-28)
+
+* Fix "EXPANDED_CODE_SIGN_IDENTITY: unbound variable" error  
+  [#7708](https://github.com/CocoaPods/CocoaPods/issues/7708#issuecomment-424353161)
+
 ## 1.5.3 (2018-05-25)
 
 ##### Enhancements
