@@ -26,6 +26,13 @@ To install release candidates run `[sudo] gem install cocoapods --pre`
 * Fix errors when archiving a Catalyst app which depends on a pod which uses `header_mappings_dir`.  
   [Thomas Goyne](https://github.com/tgoyne)
   [#10224](https://github.com/CocoaPods/CocoaPods/pull/10224)
+* Do not add dependencies to 'Link Binary With Libraries' phase.  
+  [Dimitris Koutsogiorgas](https://github.com/dnkoutso)
+  [#10133](https://github.com/CocoaPods/CocoaPods/pull/10133)
+
+* Ensure cache integrity on concurrent installations.  
+  [Erik Blomqvist](https://github.com/codiophile)
+  [#10013](https://github.com/CocoaPods/CocoaPods/issues/10013)
 
 * Fix missing `-ObjC` for static XCFrameworks - take 2  
   [Paul Beusterien](https://github.com/paulb777)
