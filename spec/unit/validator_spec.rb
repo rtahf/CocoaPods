@@ -922,7 +922,9 @@ module Pod
           target.symbol_type.should == :application
           target.deployment_target.should.be.nil
           target.platform_name.should == :ios
-
+          target.build_configurations.each do |c|
+            c.build_settings['INFOPLIST_FILE'].should == '$(SRCROOT)/App/App-Info.plist'
+          end
           Xcodeproj::Project.schemes(project.path).should == %w(App)
         end
 
